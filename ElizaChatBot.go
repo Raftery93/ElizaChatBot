@@ -5,8 +5,11 @@ package main
 
 import (
 	"fmt"
+	"math/rand"
 	"net/http"
+	"regexp"
 	"strings"
+	"time"
 	//"strconv"
 )
 
@@ -40,19 +43,108 @@ func elizaHandler(w http.ResponseWriter, r *http.Request) {
 
 func elizaResponseHandler(userResponse string) string {
 
-	if strings.Contains(strings.ToLower(userResponse), "hi") {
-		println("in first if")
-		elizaResponse := "if 1"
-		return elizaResponse
+	rand.Seed(time.Now().UTC().UnixNano())
 
-	} else if strings.Contains(strings.ToLower(userResponse), "no") {
-		println("in second if")
-		elizaResponse := "if 2"
-		return elizaResponse
+	defaults := []string{
+		"I'm not sure what you mean... Why don't you tell me something about yourself?",
+		"I'm afraid I don't understand, how are you feeling?",
+		"Your not making too much sense, when are we going to talk about something you care about?",
+		"Tell me more about that.",
+		"That bores me, tell me something entertaining.",
+		"Why are you telling me this?"}
+
+	defaultQuestions := []string{
+		"Why are you asking me this question?",
+		"I thought we were talking about you?",
+		"This question makes me sad."}
+
+	defaultExclamation := []string{
+		"Why are you shouting at me babes? Tell me something interesting.",
+		"There is no need to shout, I understand you are frustrated.",
+		"Stop shouting, you might wake the neighbours."}
+
+	//=======================================================================================
+	//regexp
+	//match := regexp.MustCompile(`(?i)\bi am\b|\bI am\b|\bim\b|\bIm\b|\bI'm\b|\bi'm\b`)
+
+	//match2 := regexp.MustCompile(`(?i)^(I am|I'm|im) ([^\.\?!]*)`)
+
+	/*
+		testInputs := []string{
+
+			"People say I look like both my mother and father.",
+			"Father was a teacher.",
+			"I was my father’s favourite.",
+			"I’m looking forward to the weekend.",
+			"My grandfather was French!",
+			"I am happy.",
+			"I am not happy with your responses.",
+			"I am not sure that you understand the effect that your questions are having on me.",
+			"I am supposed to just take what you’re saying at face value?",
+		}
+	*/
+
+	match := regexp.MustCompile(`(?i)\bfather\b`)
+
+	//userInput = strings.Trim(userInput, "\r\n")  might use/need********************
+
+	//fmt.Println(elizaOutputs[rand.Intn(len(userInputs))])
+	//strings.ToLower(userInput)
+
+	if match.MatchString(userResponse) {
+		//if strings.EqualFold(strings.ToLower(userInput), "father") {
+		return "Why don’t you tell me more about your father?"
 	} else {
-		println("in else")
-		elizaResponse := "if 3"
-		return elizaResponse
+
+		match := regexp.MustCompile(`(?i)\bi am\b|\bI am\b|\bim\b|\bIm\b|\bI'm\b|\bi'm\b`)
+
+		if match.MatchString(userResponse) {
+
+			if strings.Contains(strings.ToLower(userResponse), "your") {
+
+				test := regexp.MustCompile(`your`)
+
+				userResponse = test.ReplaceAllString(userResponse, "my")
+
+			}
+
+			if strings.Contains(strings.ToLower(userResponse), "me") {
+
+				test1 := regexp.MustCompile(`me`)
+
+				userResponse = test1.ReplaceAllString(userResponse, "you")
+
+			}
+
+			if strings.Contains(strings.ToLower(userResponse), "you") {
+
+				test2 := regexp.MustCompile(`you`)
+
+				userResponse = test2.ReplaceAllString(userResponse, "I")
+
+			}
+
+			res := match.ReplaceAllString(userResponse, "How do you know you are")
+
+			//fmt.Println(res + "?")
+			return res + "?"
+
+		}
+	}
+
+	//============================================
+
+	if strings.Contains(strings.ToLower(userResponse), "hi") {
+		return "Hello friend, how are you?"
+
+	} else if strings.Contains(strings.ToLower(userResponse), "how are you") {
+		return "I'm good honey, you?"
+	} else if strings.Contains(strings.ToLower(userResponse), "?") {
+		return defaultQuestions[rand.Intn(len(defaultQuestions))]
+	} else if strings.Contains(strings.ToLower(userResponse), "!") {
+		return defaultExclamation[rand.Intn(len(defaultExclamation))]
+	} else {
+		return defaults[rand.Intn(len(defaults))]
 	}
 
 }

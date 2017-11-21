@@ -83,7 +83,7 @@
 					
 					//Append new userText onto convoList
 					//http://api.jquery.com/append/ & https://www.w3schools.com/jquery/html_append.asp
-					convoList.append("<li class='list-group-item'>You: "+ userText +"</li>");
+					convoList.append("<li class='list-group-item'><strong>You:</strong> "+ userText +"</li>");
 			
 					//So I can return userInput to /eliza
 					const returnInput = {"userInput" : userText }
@@ -95,7 +95,7 @@
 					// and https://stackoverflow.com/questions/10931836/should-i-use-done-and-fail-for-new-jquery-ajax-code-instead-of-success-and
 					.done(function(resp){
 						//eliza response
-							 newER = "<li class='list-group-item list-group-item-primary text-right'>Eliza:"+resp+"</li>";
+							 newER = "<li class='list-group-item list-group-item-primary text-right'><strong>Eliza:</strong> "+resp+"</li>";
 							setTimeout(function(){convoList.append(newER)}, 1500);
 					})
 					//See comment for .done
