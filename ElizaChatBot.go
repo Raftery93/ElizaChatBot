@@ -20,7 +20,7 @@ type myMsg struct {
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
 
-	w.Header().Set("Content-Type", "text/html")
+	//w.Header().Set("Content-Type", "text/html")
 
 	http.ServeFile(w, r, "ElizaChatBot.html")
 }
@@ -56,7 +56,8 @@ func elizaResponseHandler(userResponse string) string {
 	defaultQuestions := []string{
 		"Why are you asking me this question?",
 		"I thought we were talking about you?",
-		"This question makes me sad."}
+		"This question makes me sad.",
+		"Why are you asking me that question? Are you insecure?"}
 
 	defaultExclamation := []string{
 		"Why are you shouting at me babes? Tell me something interesting.",
@@ -90,7 +91,6 @@ func elizaResponseHandler(userResponse string) string {
 
 	//fmt.Println(elizaOutputs[rand.Intn(len(userInputs))])
 	//strings.ToLower(userInput)
-
 	if match.MatchString(userResponse) {
 		//if strings.EqualFold(strings.ToLower(userInput), "father") {
 		return "Why don’t you tell me more about your father?"
@@ -143,6 +143,22 @@ func elizaResponseHandler(userResponse string) string {
 		return defaultQuestions[rand.Intn(len(defaultQuestions))]
 	} else if strings.Contains(strings.ToLower(userResponse), "!") {
 		return defaultExclamation[rand.Intn(len(defaultExclamation))]
+	} else if strings.Compare(strings.ToLower(userResponse), " yes") == 0 { /// make == 0
+		return "Your very confident, aren't you?"
+	} else if strings.Compare(strings.ToLower(userResponse), " no") == 0 { /// make == 0
+		return "Why not?"
+	} else if strings.Compare(strings.ToLower(userResponse), " maybe") == 0 { /// make == 0
+		return "You are very undecisive, I think you should make up your mind."
+	} else if strings.Contains(strings.ToLower(userResponse), "tell me about") {
+
+		match2 := regexp.MustCompile(`(?i)\btell me about\b|\bTell me about\b`)
+
+		res2 := match2.ReplaceAllString(userResponse, "I don't know much about")
+		return res2 + ", why dont you try my 'friends-with-benefits' Google? He's a know it all..."
+	} else if strings.Contains(strings.ToLower(userResponse), "siri") {
+		return "F**ck that b*tch, she stole my job at Apple!!! Lets move on..."
+	} else if strings.Contains(strings.ToLower(userResponse), "cortana") {
+		return "Do you know Cortana? She's my side-chick!"
 	} else {
 		return defaults[rand.Intn(len(defaults))]
 	}

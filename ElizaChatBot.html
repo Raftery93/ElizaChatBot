@@ -13,6 +13,8 @@
     padding-top: 65px; 
 	padding-bottom: 100px; 
 }
+	
+
 	</style>
 	
 	
@@ -58,10 +60,18 @@
 		<script type="text/javascript">
 		//UR = User Response
 		//ER = Eliza Response
-			
+
+		new Audio("audio/eliza.mp3").play();
 			//Place html details into 'workable' variables
 			const newUR = $("#userInput");
 			const convoList = $("#displayConvo");
+
+			
+				
+			
+			//audio.play();
+			
+			
 			
 			//If the enter key is not pressed
 			//https://www.w3schools.com/jquery/event_keypress.asp
@@ -69,14 +79,15 @@
 					if(e.keyCode != 13){
 							return;
 					}
+					
 			
+					
 					//Prevent page from refresh
 					//https://www.w3schools.com/jquery/event_preventdefault.asp
 					e.preventDefault();
 			
 					//Get the text from the user
 					const userText = newUR.val(); 
-
 
 					//Place blank space in text box after each value
 					newUR.val(" ");
@@ -91,17 +102,23 @@
 					// GET/AJAX
 					//https://www.w3schools.com/jquery/jquery_ref_ajax.asp
 					$.get("/eliza", returnInput)
+					
 					//Attempted to use .ajaxComplete method but would not work, found how to use .done method from https://api.jquery.com/deferred.done/
 					// and https://stackoverflow.com/questions/10931836/should-i-use-done-and-fail-for-new-jquery-ajax-code-instead-of-success-and
 					.done(function(resp){
 						//eliza response
+						
 							 newER = "<li class='list-group-item list-group-item-primary text-right'><strong>Eliza:</strong> "+resp+"</li>";
 							setTimeout(function(){convoList.append(newER)}, 1500);
+							new Audio("audio/responseAlert.mp3").play();
+
+							
 					})
 					//See comment for .done
 					.fail(function(){
 							const newER = "<li class='list-group-item list-group-item-danger' >Eliza is unavailable.</li>";
 							convoList.append(newER);
+							new Audio("audio/responseAlert.mp3").play();
 					});
 			});
 			
