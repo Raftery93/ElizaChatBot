@@ -1,8 +1,8 @@
-// Problem 1
-// Conor Raftery 12/10/17
-
+// GoLang Project - This projects uses a Go file to serve a HTML page.
+// Conor Raftery 25/10/17
 package main
 
+//Imports
 import (
 	"fmt"
 	"math/rand"
@@ -10,96 +10,107 @@ import (
 	"regexp"
 	"strings"
 	"time"
-	//"strconv"
 )
-
-type myMsg struct {
-	ER string
-	UR string
-}
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
 
+	//Without this, it allows me to use line 32 correctly
 	//w.Header().Set("Content-Type", "text/html")
 
+	//serve html file
 	http.ServeFile(w, r, "ElizaChatBot.html")
 }
 
 func elizaHandler(w http.ResponseWriter, r *http.Request) {
 
+	//get userResponse from html page
 	userResponse := r.URL.Query().Get("userInput")
+	//Calls function to select which eliza response to use
 	elizaResponse := elizaResponseHandler(userResponse)
 
+	//prints elizaResponse to html
 	fmt.Fprintf(w, elizaResponse)
 
-	//elizaResponse := "hello cunt"
+	//Tested hardcoded elizaResponse
+	//elizaResponse := "hello"
 
+	//Configuring the Fprintf to html page
 	//fmt.Fprintf(w, userResponse)
 	//fmt.Fprintf(w, elizaResponse)
+
+	//Attempted to parse into html template - didn't work
 	//t, _ := template.ParseFiles("ElizaChatBot.html")
 
+	//Passing values into html page, didn't work with the ajax as it always held the first initial value
 	//t.Execute(w, &myMsg{ER: elizaResponse, UR: userResponse})
 }
 
+//function for Eliza Responses
 func elizaResponseHandler(userResponse string) string {
 
+	//get random seed from the current time
 	rand.Seed(time.Now().UTC().UnixNano())
 
+	//Default strings if userInput doesn't match and regexp/strings.contains
 	defaults := []string{
 		"I'm not sure what you mean... Why don't you tell me something about yourself?",
 		"I'm afraid I don't understand, how are you feeling?",
 		"Your not making too much sense, when are we going to talk about something you care about?",
 		"Tell me more about that.",
 		"That bores me, tell me something entertaining.",
-		"Why are you telling me this?"}
+		"Why are you telling me this?",
+	}
 
+	//a set of questions so the responses vary
 	defaultQuestions := []string{
 		"Why are you asking me this question?",
 		"I thought we were talking about you?",
 		"This question makes me sad.",
-		"Why are you asking me that question? Are you insecure?"}
+		"Why are you asking me that question? Are you insecure?",
+	}
 
+	//a set of responses if userResponse contains '!' so the responses vary
 	defaultExclamation := []string{
 		"Why are you shouting at me babes? Tell me something interesting.",
 		"There is no need to shout, I understand you are frustrated.",
-		"Stop shouting, you might wake the neighbours."}
+		"Stop shouting, you might wake the neighbours.",
+	}
 
 	//=======================================================================================
-	//regexp
-	//match := regexp.MustCompile(`(?i)\bi am\b|\bI am\b|\bim\b|\bIm\b|\bI'm\b|\bi'm\b`)
-
-	//match2 := regexp.MustCompile(`(?i)^(I am|I'm|im) ([^\.\?!]*)`)
 
 	/*
-		testInputs := []string{
+		used these to test Elizas responses
+			testInputs := []string{
 
-			"People say I look like both my mother and father.",
-			"Father was a teacher.",
-			"I was my father’s favourite.",
-			"I’m looking forward to the weekend.",
-			"My grandfather was French!",
-			"I am happy.",
-			"I am not happy with your responses.",
-			"I am not sure that you understand the effect that your questions are having on me.",
-			"I am supposed to just take what you’re saying at face value?",
-		}
+				"People say I look like both my mother and father.",
+				"Father was a teacher.",
+				"I was my father’s favourite.",
+				"I’m looking forward to the weekend.",
+				"My grandfather was French!",
+				"I am happy.",
+				"I am not happy with your responses.",
+				"I am not sure that you understand the effect that your questions are having on me.",
+				"I am supposed to just take what you’re saying at face value?",
+			}
 	*/
 
+	//if the user enters string containing 'father', could have done 1000 of these
 	match := regexp.MustCompile(`(?i)\bfather\b`)
 
 	//userInput = strings.Trim(userInput, "\r\n")  might use/need********************
 
-	//fmt.Println(elizaOutputs[rand.Intn(len(userInputs))])
-	//strings.ToLower(userInput)
+	//if string contains 'father' return this elizaResponse
 	if match.MatchString(userResponse) {
-		//if strings.EqualFold(strings.ToLower(userInput), "father") {
 		return "Why don’t you tell me more about your father?"
 	} else {
 
+		//if user enters any variation of 'i am'
 		match := regexp.MustCompile(`(?i)\bi am\b|\bI am\b|\bim\b|\bIm\b|\bI'm\b|\bi'm\b`)
 
+		//enter 'if' if user enters 'i am'
 		if match.MatchString(userResponse) {
 
+			//if statements below are used for changing pro-nouns, 'your' changes to 'my'
 			if strings.Contains(strings.ToLower(userResponse), "your") {
 
 				test := regexp.MustCompile(`your`)
@@ -108,6 +119,7 @@ func elizaResponseHandler(userResponse string) string {
 
 			}
 
+			//'me' changes to 'you'
 			if strings.Contains(strings.ToLower(userResponse), "me") {
 
 				test1 := regexp.MustCompile(`me`)
@@ -116,6 +128,7 @@ func elizaResponseHandler(userResponse string) string {
 
 			}
 
+			//'you' changes to 'i'
 			if strings.Contains(strings.ToLower(userResponse), "you") {
 
 				test2 := regexp.MustCompile(`you`)
@@ -124,6 +137,7 @@ func elizaResponseHandler(userResponse string) string {
 
 			}
 
+			//Place string below if 'i am' is found
 			res := match.ReplaceAllString(userResponse, "How do you know you are")
 
 			//fmt.Println(res + "?")
@@ -132,11 +146,11 @@ func elizaResponseHandler(userResponse string) string {
 		}
 	}
 
-	//============================================
+	//====All above uses one method to create matches (regexp), below uses different method (strings)========
 
-	if strings.Contains(strings.ToLower(userResponse), "hi") {
+	//if / if else statements below catch different key words, and return an apropriate response
+	if strings.Contains(strings.ToLower(userResponse), "hello") {
 		return "Hello friend, how are you?"
-
 	} else if strings.Contains(strings.ToLower(userResponse), "how are you") {
 		return "I'm good honey, you?"
 	} else if strings.Contains(strings.ToLower(userResponse), "?") {
@@ -156,15 +170,17 @@ func elizaResponseHandler(userResponse string) string {
 		res2 := match2.ReplaceAllString(userResponse, "I don't know much about")
 		return res2 + ", why dont you try my 'friends-with-benefits' Google? He's a know it all..."
 	} else if strings.Contains(strings.ToLower(userResponse), "siri") {
-		return "F**ck that b*tch, she stole my job at Apple!!! Lets move on..."
+		return "F*ck that b*tch, she stole my job at Apple!!! Lets move on..."
 	} else if strings.Contains(strings.ToLower(userResponse), "cortana") {
 		return "Do you know Cortana? She's my side-chick!"
 	} else {
+		//if nothing is caught, return one of the defaults
 		return defaults[rand.Intn(len(defaults))]
 	}
 
 }
 
+//main, calls the different functions to serve html page
 func main() {
 
 	http.HandleFunc("/", requestHandler)
