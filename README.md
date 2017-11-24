@@ -27,14 +27,14 @@ ElizaChatBot.exe
 ### Using the Program
 This Eliza program will always respond with a certain response. If it recognises a word/statement, it will reply with a relative response. See what happens when you type (not case sensative):
 Hello
-I am happy
-how are you
-'yes', 'no' or 'maybe'
-mention the word 'Siri' or 'Cortana'
-Ask it any question followed by a '?' e.g. "What are you?"
-Try shouting at it followed by a '!' e.g "Shut up!"
-Ask it to tell you about something. e.g "Tell me about GMIT"
-It also incorporates pro-nouns, try using the following sentence for an example: "I am not sure that you understand the effect that your questions are having on me."
+* I am happy
+* how are you
+* 'yes', 'no' or 'maybe'
+* mention the word 'Siri' or 'Cortana'
+* Ask it any question followed by a '?' e.g. "What are you?"
+* Try shouting at it followed by a '!' e.g "Shut up!"
+* Ask it to tell you about something. e.g "Tell me about GMIT"
+* It also incorporates pro-nouns, try using the following sentence for an example: "I am not sure that you understand the effect that your questions are having on me."
 
 This is done by using imports 'regexp' and 'strings'
 
